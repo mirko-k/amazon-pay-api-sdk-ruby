@@ -1,0 +1,141 @@
+require 'rspec'
+require_relative '../lib/amazon_pay/client'
+require_relative '../lib/amazon_pay/client_helper'
+require_relative 'shared_config'
+
+RSpec.describe AmazonPayClient do
+    include SharedConfig
+
+    # Define the configuration and mock ClientHelper
+    let(:config) { default_config(SpecConstants::REGION) }
+    let(:client_helper) { instance_double(ClientHelper) }
+    let(:client) { AmazonPayClient.new(config) }
+    
+    # Define constants for API endpoint and headers
+    let(:url_fragment) { SpecConstants::URL }
+    let(:method) { SpecConstants::POST }
+    let(:payload) { SpecConstants::PAYLOAD }
+    let(:headers) { SpecConstants::CUSTOM_HEADERS_JSON }
+    let(:query_params) { SpecConstants::QUERY_PARAMS_JSON }
+    
+    # Construct the URI for the API request
+    let(:uri) { URI.parse("#{SpecConstants::URL}#{SpecConstants::API}/v2/#{url_fragment}?#{SpecConstants::QUERY}") }
+    
+    # Create a mock request object
+    let(:request) { Net::HTTP::Post.new(uri) }
+    
+    # Define a mock response object
+    let(:response) { instance_double(Net::HTTPResponse) }
+    
+    # Define the expected signed headers for the request
+    let(:signed_headers) { { SpecConstants::AUTHORIZATION => SpecConstants::CUSTOM_HEADER } }
+    let(:merchant_account_id) { SpecConstants::SAMPLE_MERCHANT_ACCOUNT_ID }
+
+    # Before each test, set up the behavior of ClientHelper methods
+    before do
+        allow(ClientHelper).to receive(:new).with(config).and_return(client_helper)
+        allow(client_helper).to receive(:to_query).with(query_params).and_return(SpecConstants::QUERY)
+        allow(client_helper).to receive(:build_uri).with(url_fragment, SpecConstants::QUERY).and_return(uri)
+        allow(client_helper).to receive(:create_request).with(method, uri, payload).and_return(request)
+        allow(client_helper).to receive(:signed_headers).with(method, uri, payload, headers, SpecConstants::QUERY).and_return(signed_headers)
+        allow(client_helper).to receive(:set_request_headers).with(request, signed_headers)
+        allow(client_helper).to receive(:send_request).with(uri, request).and_return(response)
+    end
+
+    describe '#initialize' do
+        context 'with valid configuration' do
+            it 'initializes ClientHelper with the given configuration' do
+                # Verify that ClientHelper was initialized with the correct config
+                expect(client.instance_variable_get(:@helper)).to eq(client_helper)
+            end
+        end
+
+        context 'with invalid configuration' do
+            it 'raises an error when ClientHelper fails validation' do
+                invalid_config = { region: SpecConstants::JP } # Invalid configuration
+
+                # Simulate an error when creating ClientHelper with invalid config
+                allow(ClientHelper).to receive(:new).with(invalid_config).and_raise(StandardError, SpecConstants::INVALID_CONFIG_ERROR_MESSAGE)
+
+                # Expect an error to be raised when initializing AmazonPayClient with invalid config
+                expect {AmazonPayClient.new(invalid_config)}.to raise_error(StandardError, SpecConstants::INVALID_CONFIG_ERROR_MESSAGE)
+            end
+        end
+    end
+
+    describe '#api_call' do
+        # Define doubles for HTTP request and response objects
+        let(:request) { instance_double(Net::HTTP::Post, body: payload) }
+        let(:transient_error_response) { instance_double(Net::HTTPResponse, code: Constants::HTTP_SERVER_ERROR) }
+        let(:success_response) { instance_double(Net::HTTPResponse, code: Constants::HTTP_OK) }
+    
+        # Set up the test environment
+        before do
+            # Configure the client_helper to return a transient error response first and then a success response
+            allow(client_helper).to receive(:send_request).and_return(transient_error_response, success_response )
+        end
+    
+        it 'converts query parameters, builds URI, creates and sends the request' do
+            # Call the api_call method and get the result
+            result = client.api_call(url_fragment, method, payload: payload, headers: headers, query_params: query_params)
+
+            # Verify interactions and results using the helper method
+            verify_api_call_interactions(result)
+        end
+
+        # Helper method to verify interactions and result
+        def verify_api_call_interactions(result)
+            # Verify that ClientHelper methods are called with the expected arguments
+            expect(client_helper).to have_received(:to_query).with(query_params)
+            expect(client_helper).to have_received(:build_uri).with(url_fragment, SpecConstants::QUERY)
+            expect(client_helper).to have_received(:create_request).with(method, uri, payload).at_least(:once)
+            expect(client_helper).to have_received(:signed_headers).with(method, uri, payload, headers, SpecConstants::QUERY).at_least(:once)
+            expect(client_helper).to have_received(:send_request).exactly(2).times.with(uri, request)
+            
+            # Verify that the result's code is 200
+            expect(result.code).to eq(Constants::HTTP_OK)
+        end
+    end
+
+    describe '#create_merchant_account' do
+        it 'calls create_merchant_account api with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                Constants::MERCHANT_ACCOUNTS_BASE_URL,
+                Constants::POST,
+                payload: payload,
+                headers: headers
+            ).and_return(response)
+            
+            result = client.create_merchant_account(payload, headers: headers)
+            expect(result).to eq(response)
+        end
+    end
+
+    describe '#update_merchant_account' do
+        it 'calls update_merchant_account with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                "#{Constants::MERCHANT_ACCOUNTS_BASE_URL}/#{merchant_account_id}",
+                Constants::PATCH,
+                payload: payload,
+                headers: headers,
+            ).and_return(response)
+            
+            result = client.update_merchant_account(merchant_account_id, payload, headers: headers)
+            expect(result).to eq(response)
+        end
+    end
+
+    describe '#merchant_account_claim' do
+        it 'calls merchant_account_claim with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                "#{Constants::MERCHANT_ACCOUNTS_BASE_URL}/#{merchant_account_id}/claim",
+                Constants::POST,
+                payload: payload,
+                headers: headers,
+            ).and_return(response)
+            
+            result = client.merchant_account_claim(merchant_account_id, payload, headers: headers)
+            expect(result).to eq(response)
+        end
+    end
+end
