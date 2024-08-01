@@ -6,8 +6,21 @@ This guide provides step-by-step instructions on how to use the Amazon Pay Clien
 ### Prerequisites
 
 - Ruby installed on your system.
-- `amazon_pay` gem installed or this source code has been imported in your project.
+- `amazon-pay-api-sdk-ruby` gem installed or this source code has been imported in your project.
 - Your `publicKeyId` & `privateKey.pem` file available.
+
+### Install
+```
+gem install amazon-pay-api-sdk-ruby
+```
+or add the following in your Gemfile:
+
+```ruby
+gem 'amazon-pay-api-sdk-ruby'
+```
+```
+bundle install
+```
 
 ### Configuration
 
