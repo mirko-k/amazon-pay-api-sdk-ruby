@@ -138,4 +138,251 @@ RSpec.describe AmazonPayClient do
             expect(result).to eq(response)
         end
     end
+
+    describe '#generate_button_signature' do
+        let(:payload_hash) { { key: 'value' } }
+        let(:payload_string) { JSON.generate(payload_hash) }
+        let(:signature) { 'signed_payload' }
+
+        before do
+            allow(client_helper).to receive(:sign).with(payload_string).and_return(signature)
+        end
+
+        it 'signs the payload if it is a Hash' do
+            expect(client.generate_button_signature(payload_hash)).to eq(signature)
+        end
+
+        it 'signs the payload if it is a String' do
+            expect(client.generate_button_signature(payload_string)).to eq(signature)
+        end
+    end
+
+    describe '#get_buyer' do
+        let(:buyer_token) { 'buyerToken' }
+
+        it 'calls api_call with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                "#{Constants::BUYERS_URL}/#{buyer_token}",
+                Constants::GET,
+                headers: headers
+            ).and_return(response)
+
+            result = client.get_buyer(buyer_token, headers: headers)
+            expect(result).to eq(response)
+        end
+    end
+
+    describe '#create_checkout_session' do
+        it 'calls api_call with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                Constants::CHECKOUT_SESSION_URL,
+                Constants::POST,
+                payload: payload,
+                headers: headers
+            ).and_return(response)
+
+            result = client.create_checkout_session(payload, headers: headers)
+            expect(result).to eq(response)
+        end
+    end
+
+    describe '#get_checkout_session' do
+        let(:checkout_session_id) { 'checkoutSessionId' }
+
+        it 'calls api_call with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                "#{Constants::CHECKOUT_SESSION_URL}/#{checkout_session_id}",
+                Constants::GET,
+                headers: headers
+            ).and_return(response)
+
+            result = client.get_checkout_session(checkout_session_id, headers: headers)
+            expect(result).to eq(response)
+        end
+    end
+
+    describe '#update_checkout_session' do
+        let(:checkout_session_id) { 'checkoutSessionId' }
+
+        it 'calls api_call with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                "#{Constants::CHECKOUT_SESSION_URL}/#{checkout_session_id}",
+                Constants::PATCH,
+                payload: payload,
+                headers: headers
+            ).and_return(response)
+
+            result = client.update_checkout_session(checkout_session_id, payload, headers: headers)
+            expect(result).to eq(response)
+        end
+    end
+
+    describe '#complete_checkout_session' do
+        let(:checkout_session_id) { 'checkoutSessionId' }
+
+        it 'calls api_call with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                "#{Constants::CHECKOUT_SESSION_URL}/#{checkout_session_id}/complete",
+                Constants::POST,
+                payload: payload,
+                headers: headers
+            ).and_return(response)
+
+            result = client.complete_checkout_session(checkout_session_id, payload, headers: headers)
+            expect(result).to eq(response)
+        end
+    end
+
+    describe '#finalize_checkout_session' do
+        let(:checkout_session_id) { 'checkoutSessionId' }
+
+        it 'calls api_call with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                "#{Constants::CHECKOUT_SESSION_URL}/#{checkout_session_id}/finalize",
+                Constants::POST,
+                payload: payload,
+                headers: headers
+            ).and_return(response)
+
+            result = client.finalize_checkout_session(checkout_session_id, payload, headers: headers)
+            expect(result).to eq(response)
+        end
+    end
+
+    describe '#get_charge_permission' do
+        let(:charge_permission_id) { 'chargePermissionId' }
+
+        it 'calls api_call with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                "#{Constants::CHARGE_PERMISSIONS_URL}/#{charge_permission_id}",
+                Constants::GET,
+                headers: headers
+            ).and_return(response)
+
+            result = client.get_charge_permission(charge_permission_id, headers: headers)
+            expect(result).to eq(response)
+        end
+    end
+
+    describe '#update_charge_permission' do
+        let(:charge_permission_id) { 'chargePermissionId' }
+
+        it 'calls api_call with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                "#{Constants::CHARGE_PERMISSIONS_URL}/#{charge_permission_id}",
+                Constants::PATCH,
+                payload: payload,
+                headers: headers
+            ).and_return(response)
+
+            result = client.update_charge_permission(charge_permission_id, payload, headers: headers)
+            expect(result).to eq(response)
+        end
+    end
+
+    describe '#close_charge_permission' do
+        let(:charge_permission_id) { 'chargePermissionId' }
+
+        it 'calls api_call with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                "#{Constants::CHARGE_PERMISSIONS_URL}/#{charge_permission_id}/close",
+                Constants::DELETE,
+                payload: payload,
+                headers: headers
+            ).and_return(response)
+
+            result = client.close_charge_permission(charge_permission_id, payload, headers: headers)
+            expect(result).to eq(response)
+        end
+    end
+
+    describe '#create_charge' do
+        it 'calls api_call with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                Constants::CHARGES_URL,
+                Constants::POST,
+                payload: payload,
+                headers: headers
+            ).and_return(response)
+
+            result = client.create_charge(payload, headers: headers)
+            expect(result).to eq(response)
+        end
+    end
+
+    describe '#get_charge' do
+        let(:charge_id) { 'chargeId' }
+
+        it 'calls api_call with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                "#{Constants::CHARGES_URL}/#{charge_id}",
+                Constants::GET,
+                headers: headers
+            ).and_return(response)
+
+            result = client.get_charge(charge_id, headers: headers)
+            expect(result).to eq(response)
+        end
+    end
+
+    describe '#capture_charge' do
+        let(:charge_id) { 'chargeId' }
+
+        it 'calls api_call with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                "#{Constants::CHARGES_URL}/#{charge_id}/capture",
+                Constants::POST,
+                payload: payload,
+                headers: headers
+            ).and_return(response)
+
+            result = client.capture_charge(charge_id, payload, headers: headers)
+            expect(result).to eq(response)
+        end
+    end
+
+    describe '#cancel_charge' do
+        let(:charge_id) { 'chargeId' }
+
+        it 'calls api_call with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                "#{Constants::CHARGES_URL}/#{charge_id}/cancel",
+                Constants::DELETE,
+                payload: payload,
+                headers: headers
+            ).and_return(response)
+
+            result = client.cancel_charge(charge_id, payload, headers: headers)
+            expect(result).to eq(response)
+        end
+    end
+
+    describe '#create_refund' do
+        it 'calls api_call with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                Constants::REFUNDS_URL,
+                Constants::POST,
+                payload: payload,
+                headers: headers
+            ).and_return(response)
+
+            result = client.create_refund(payload, headers: headers)
+            expect(result).to eq(response)
+        end
+    end
+
+    describe '#get_refund' do
+        let(:refund_id) { 'refundId' }
+
+        it 'calls api_call with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                "#{Constants::REFUNDS_URL}/#{refund_id}",
+                Constants::GET,
+                headers: headers
+            ).and_return(response)
+
+            result = client.get_refund(refund_id, headers: headers)
+            expect(result).to eq(response)
+        end
+    end
 end

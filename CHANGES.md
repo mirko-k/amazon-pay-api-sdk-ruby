@@ -1,3 +1,8 @@
+#### Version 1.1.0 - August 2024
+- Added APIs for Buyer, CheckoutSession, ChargePermission, Charge, and Refund.
+- Implemented a utility for generating button signatures.
+- Included a README file with sample code for each API.
+
 #### Version 1.0.0 - August 2024
 Initial release with the following features:
 - Amazon Pay Ruby SDK for accessing Amazon Pay APIs
