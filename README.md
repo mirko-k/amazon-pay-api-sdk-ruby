@@ -205,9 +205,11 @@ merchantAccountClaimPayload = {
 }
 
 response = client.merchant_account_claim('XXXXXXXXX', merchantAccountClaimPayload, headers: {})
-if response.code.to_i == 303
+if response.code.to_i == 303 || response.code.to_i == 200
     puts "Merchant Account Claim API Response:"
     puts response.body
+    puts "Headers:"
+    puts response.to_hash.to_json
 else
     puts "Error: Merchant Account Claim API"
     puts "Status: #{response.code}"
