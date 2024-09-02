@@ -86,35 +86,17 @@ createMerchantAccountPayload = {
             }
         }
     },
-    "beneficiaryOwners": [
-        {
-            "personId": "BO1",
-            "personFullName": "ABC ABC",
+    "beneficiaryOwners": [{
+            "personFullName": "Rufus Rufus",
             "residentialAddress": {
-                "addressLine1": "122, ABC XYZ",
-                "addressLine2": "XYZ",
-                "city": "XYZ",
-                "stateOrRegion": "XYZ",
-                "postalCode": "123456",
+                "addressLine1": "4-7, Sunny Mansion 203",
+                "addressLine2": "Boren Ave",
+                "city": "Chiryushi",
+                "stateOrRegion": "AICHI",
+                "postalCode": "4720021",
                 "countryCode": "JP",
                 "phoneNumber": {
-                    "countryCode": "123",
-                    "number": "2062062061"
-                }
-            }
-        },
-        {
-            "personId": "BO2",
-            "personFullName": "ABC ABC",
-            "residentialAddress": {
-                "addressLine1": "122, ABC XYZ",
-                "addressLine2": "XYZ",
-                "city": "XYZ",
-                "stateOrRegion": "XYZ",
-                "postalCode": "123456",
-                "countryCode": "JP",
-                "phoneNumber": {
-                    "countryCode": "123",
+                    "countryCode": "81",
                     "number": "2062062061"
                 }
             }
