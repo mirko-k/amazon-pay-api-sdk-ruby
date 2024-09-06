@@ -1,3 +1,7 @@
+#### Version 1.2.0 - September 2024
+- Added APIs for Reports.
+- Included a README file with sample code for each API.
+
 #### Version 1.1.0 - August 2024
 - Added APIs for Buyer, CheckoutSession, ChargePermission, Charge, and Refund.
 - Implemented a utility for generating button signatures.

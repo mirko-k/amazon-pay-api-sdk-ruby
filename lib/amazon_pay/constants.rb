@@ -2,7 +2,7 @@ require 'net/http'
 
 module Constants
     SDK_TYPE = "amazon-pay-api-sdk-ruby".freeze
-    SDK_VERSION = "1.1.0".freeze
+    SDK_VERSION = "1.2.0".freeze
     API_VERSION = "v2".freeze
     API_ENDPOINTS = {
       'na' => 'pay-api.amazon.com',
@@ -46,4 +46,8 @@ module Constants
     CHARGE_PERMISSIONS_URL = 'chargePermissions'.freeze
     CHARGES_URL = 'charges'.freeze
     REFUNDS_URL = 'refunds'.freeze
+    REPORTS = 'reports'.freeze
+    REPORT_SCHEDULES = 'report-schedules'.freeze
+    REPORT_DOCUMENTS = 'report-documents'.freeze
+    DISBURSEMENTS = 'disbursements'.freeze
 end

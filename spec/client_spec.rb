@@ -385,4 +385,128 @@ RSpec.describe AmazonPayClient do
             expect(result).to eq(response)
         end
     end
+
+    describe '#get_reports' do
+        it 'calls api_call with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                Constants::REPORTS,
+                Constants::GET,
+                headers: headers,
+                query_params: query_params
+            ).and_return(response)
+
+            result = client.get_reports(headers: headers, query_params: query_params)
+            expect(result).to eq(response)
+        end
+    end
+
+    describe '#get_report_by_id' do
+        let(:report_id) { 'reportId' }
+
+        it 'calls api_call with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                "#{Constants::REPORTS}/#{report_id}",
+                Constants::GET,
+                headers: headers
+            ).and_return(response)
+
+            result = client.get_report_by_id(report_id, headers: headers)
+            expect(result).to eq(response)
+        end
+    end
+
+    describe '#create_report' do
+        it 'calls api_call with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                Constants::REPORTS,
+                Constants::POST,
+                payload: payload,
+                headers: headers
+            ).and_return(response)
+
+            result = client.create_report(payload, headers: headers)
+            expect(result).to eq(response)
+        end
+    end
+
+    describe '#get_report_document' do
+        let(:report_document_id) { 'reportDocumentId' }
+
+        it 'calls api_call with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                "#{Constants::REPORT_DOCUMENTS}/#{report_document_id}",
+                Constants::GET,
+                headers: headers
+            ).and_return(response)
+
+            result = client.get_report_document(report_document_id, headers: headers)
+            expect(result).to eq(response)
+        end
+    end
+
+    describe '#get_report_schedules' do
+        it 'calls api_call with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                Constants::REPORT_SCHEDULES,
+                Constants::GET,
+                headers: headers,
+                query_params: query_params
+            ).and_return(response)
+
+            result = client.get_report_schedules(headers: headers, query_params: query_params)
+            expect(result).to eq(response)
+        end
+    end
+
+    describe '#get_report_schedule_by_id' do
+        let(:report_schedule_id) { 'reportScheduleId' }
+
+        it 'calls api_call with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                "#{Constants::REPORT_SCHEDULES}/#{report_schedule_id}",
+                Constants::GET,
+                headers: headers
+            ).and_return(response)
+
+            result = client.get_report_schedule_by_id(report_schedule_id, headers: headers)
+            expect(result).to eq(response)
+        end
+    end
+
+    describe '#create_report_schedule' do
+        it 'calls api_call with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+            Constants::REPORT_SCHEDULES,
+            Constants::POST,
+            payload: payload,
+            headers: headers,
+            query_params: query_params
+            ).and_return(response)
+
+            result = client.create_report_schedule(payload, headers: headers, query_params: query_params)
+            expect(result).to eq(response)
+        end
+    end
+
+    describe '#cancel_report_schedule' do
+        let(:report_schedule_id) { 'reportScheduleId' }
+        let(:response) { '200' }
+
+        before do
+            allow(client).to receive(:api_call).and_return(response)
+        end
+
+        it 'calls api_call with the correct parameters' do
+            result = client.cancel_report_schedule(report_schedule_id, headers: headers)
+            
+            expect(client).to have_received(:api_call).with(
+            "report-schedules/#{report_schedule_id}",
+            "DELETE",
+            headers: headers
+            )
+            
+            expect(result).to eq(response)
+        end
+    end
+
 end

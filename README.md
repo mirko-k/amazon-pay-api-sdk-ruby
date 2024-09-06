@@ -86,7 +86,7 @@ createMerchantAccountPayload = {
             }
         }
     },
-    "beneficiaryOwners": [{
+     "beneficiaryOwners": [{
             "personFullName": "Rufus Rufus",
             "residentialAddress": {
                 "addressLine1": "4-7, Sunny Mansion 203",
@@ -591,6 +591,156 @@ if response.code.to_i == 200
     puts response.body
 else
     puts "Error: Get Refund API"
+    puts "Status: #{response.code}"
+    puts response.body
+end
+```
+
+### Get Reports
+
+```ruby
+response = client.get_reports(query_params: {})
+if response.code.to_i == 200
+    puts "Get Reports Response:"
+    puts response.body
+else
+    puts "Error: Get Reports API"
+    puts "Status: #{response.code}"
+    puts response.body
+end
+```
+
+### Get Report By Id
+
+```ruby
+def report_id = "123456789"
+response = client.get_report_by_id(report_id, headers: {})
+if response.code.to_i == 200
+    puts "Get Report By Id Response:"
+    puts response.body
+else
+    puts "Error: Get Report By Id API"
+    puts "Status: #{response.code}"
+    puts response.body
+end
+```
+
+### Create Report
+
+```ruby
+def create_report_payload = {
+    "reportType": "_GET_FLAT_FILE_OFFAMAZONPAYMENTS_SANDBOX_SETTLEMENT_DATA_",
+    "startTime": "20240810T000000Z",
+    "endTime": "20240815T000000Z"
+}
+response = client.create_report(create_report_payload, headers: {"x-amz-pay-Idempotency-Key": SecureRandom.uuid})
+if response.code.to_i == 201
+    puts "Create Report Response:"
+    puts response.body
+else
+    puts "Error: Create Report API"
+    puts "Status: #{response.code}"
+    puts response.body
+end
+```
+
+### Get Report Document
+
+
+```ruby
+def report_document_id = "123456789"
+response = client.get_report_document(report_document_id, headers: {})
+if response.code.to_i == 200
+    puts "Get Report Document Response:"
+    puts response.body
+else
+    puts "Error: Get Report Document API"
+    puts "Status: #{response.code}"
+    puts response.body
+end
+```
+
+### Get Report Schedules
+
+```ruby
+def query_params = {
+    "reportType": "_GET_FLAT_FILE_OFFAMAZONPAYMENTS_SANDBOX_SETTLEMENT_DATA_",
+}
+response = client.get_report_schedules(query_params: query_params, headers: {})
+if response.code.to_i == 200
+    puts "Get Report Schedules Response:"
+    puts response.body
+else
+    puts "Error: Get Report Schedules API"
+    puts "Status: #{response.code}"
+    puts response.body
+end
+```
+
+### Get Report Schedule By ID
+
+```ruby
+def report_schedule_id = "123456789"
+response = client.get_report_schedule_by_id(report_schedule_id, headers: {})
+if response.code.to_i == 200
+    puts "Get Report Schedule By ID Response:"
+    puts response.body
+else
+    puts "Error: Get Report Schedule By ID API"
+    puts "Status: #{response.code}"
+    puts response.body
+end
+```
+
+### Create Report Schedule
+
+```ruby
+def create_report_schdule_payload = {
+    "reportType": "_GET_FLAT_FILE_OFFAMAZONPAYMENTS_SANDBOX_SETTLEMENT_DATA_",
+    "scheduleFrequency": "P1D",
+    "nextReportCreationTime": "20241001T000000Z"
+}
+response = client.create_report_schedule(create_report_schdule_payload, headers: {"x-amz-pay-Idempotency-Key": SecureRandom.uuid}, query_params: {})
+if response.code.to_i == 201
+    puts "Create Report Schedule Response:"
+    puts response.body
+else
+    puts "Error: Create Report Schedule API"
+    puts "Status: #{response.code}"
+    puts response.body
+end
+```
+
+#### Cancel Report Schedule
+
+```ruby
+def report_schedule_id = "123456789"
+response = client.cancel_report_schedule(report_schedule_id, headers: {})
+if response.code.to_i == 200
+    puts "Cancel Report Schedule Schedule Response:"
+    puts response.body
+else
+    puts "Error: Cancel Report Schedule Schedule API"
+    puts "Status: #{response.code}"
+    puts response.body
+end
+```
+
+### Get Disbursements
+
+```ruby
+def query_params = {
+    "startTime": '20240810T000000Z',
+    "endTime": '20240815T000000Z'
+    "pageSize": "30",
+    "nextToken": ""
+}
+response = client.get_disbursements(query_params: {}, headers: {})
+if response.code.to_i == 200
+    puts "Get Disbursements Response:"
+    puts response.body
+else
+    puts "Error: Get Disbursements API"
     puts "Status: #{response.code}"
     puts response.body
 end

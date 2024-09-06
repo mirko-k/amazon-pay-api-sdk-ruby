@@ -47,7 +47,6 @@ class AmazonPayClient
 
         # Increment the retry counter
         retries += 1
-        print "Retrying\n"
         # Raise an exception to force a retry
         raise "Transient error: #{response.code}" # Force retry
       end
@@ -266,4 +265,93 @@ class AmazonPayClient
     api_call("#{Constants::REFUNDS_URL}/#{refund_id}", Constants::GET, headers: headers)
   end
 
+  # API to retrieve a list of reports
+  # Retrieves a list of reports based on the provided query parameters.
+  # @see https://developer.amazon.com/docs/amazon-pay-api-v2/reports.html#get-reports
+  # @param {Object} headers - Optional headers for the request, such as authorization tokens or custom headers.
+  # @param {Object} query_params - Query parameters to filter the reports, such as report type or processing status.
+  # @return [HTTPResponse] The response from the API call, which includes a list of reports matching the criteria.
+  def get_reports(headers: {}, query_params: {})
+    api_call(Constants::REPORTS, Constants::GET, headers: headers, query_params: query_params)
+  end
+
+  # API to retrieve a specific report by ID
+  # Retrieves details of a specific report using its unique report ID.
+  # @see https://developer.amazon.com/docs/amazon-pay-api-v2/reports.html#get-report-by-id
+  # @param {String} report_id - The unique ID of the report to retrieve.
+  # @param {Object} headers - Optional headers for the request, such as authorization tokens or custom headers.
+  # @return [HTTPResponse] The response from the API call, which includes details of the requested report.
+  def get_report_by_id(report_id, headers: {})
+    api_call("#{Constants::REPORTS}/#{report_id}", Constants::GET, headers: headers)
+  end
+
+  # API to create a new report
+  # Creates a new report based on the provided payload.
+  # @see https://developer.amazon.com/docs/amazon-pay-api-v2/reports.html#create-report
+  # @param {Object} payload - The payload containing data required to generate the report.
+  # @param {Object} headers - Optional headers for the request, such as authorization tokens or custom headers.
+  # @return [HTTPResponse] The response from the API call, which includes confirmation and details of the created report.
+  def create_report(payload, headers: {})
+    api_call(Constants::REPORTS, Constants::POST, payload: payload, headers: headers)
+  end
+
+  # API to retrieve a specific report document by ID
+  # Retrieves the content of a specific report document using its unique report document ID.
+  # @see https://developer.amazon.com/docs/amazon-pay-api-v2/reports.html#get-report-document
+  # @param {String} report_document_id - The unique ID of the report document to retrieve.
+  # @param {Object} headers - Optional headers for the request, such as authorization tokens or custom headers.
+  # @return [HTTPResponse] The response from the API call, which includes the content of the requested report document.
+  def get_report_document(report_document_id, headers: {})
+    api_call("#{Constants::REPORT_DOCUMENTS}/#{report_document_id}", Constants::GET, headers: headers)
+  end
+
+  # API to retrieve a list of report schedules
+  # Retrieves a list of report schedules based on the provided query parameters.
+  # @see https://developer.amazon.com/docs/amazon-pay-api-v2/reports.html#get-report-schedules
+  # @param {Object} headers - Optional headers for the request, such as authorization tokens or custom headers.
+  # @param {Object} query_params - Query parameters to filter the report schedules, such as schedule type or status.
+  # @return [HTTPResponse] The response from the API call, which includes a list of report schedules matching the criteria.
+  def get_report_schedules(headers: {}, query_params: {})
+    api_call(Constants::REPORT_SCHEDULES, Constants::GET, headers: headers, query_params: query_params)
+  end
+
+  # API to retrieve a specific report schedule by ID
+  # Retrieves details of a specific report schedule using its unique report schedule ID.
+  # @see https://developer.amazon.com/docs/amazon-pay-api-v2/reports.html#get-report-schedule-by-id
+  # @param {String} report_schedule_id - The unique ID of the report schedule to retrieve.
+  # @param {Object} headers - Optional headers for the request, such as authorization tokens or custom headers.
+  # @return [HTTPResponse] The response from the API call, which includes details of the requested report schedule.
+  def get_report_schedule_by_id(report_schedule_id, headers: {})
+    api_call("#{Constants::REPORT_SCHEDULES}/#{report_schedule_id}", Constants::GET, headers: headers)
+  end
+
+  # API to create a new report schedule
+  # Creates a new report schedule based on the provided payload.
+  # @see https://developer.amazon.com/docs/amazon-pay-api-v2/reports.html#create-report-schedule
+  # @param {Object} payload - The payload containing data required to set up the report schedule.
+  # @param {Object} headers - Optional headers for the request, such as authorization tokens or custom headers.
+  # @return [HTTPResponse] The response from the API call, which includes confirmation and details of the created report schedule.
+  def create_report_schedule(payload, headers: {}, query_params: {})
+    api_call(Constants::REPORT_SCHEDULES, Constants::POST, payload: payload, headers: headers, query_params: query_params)
+  end
+
+  # API to cancel an existing report schedule by ID
+  # Cancels a specific report schedule using its unique report schedule ID.
+  # @see https://developer.amazon.com/docs/amazon-pay-api-v2/reports.html#cancel-report-schedule
+  # @param {String} report_schedule_id - The unique ID of the report schedule to cancel.
+  # @param {Object} headers - Optional headers for the request, such as authorization tokens or custom headers.
+  # @return [HTTPResponse] The response from the API call, which includes confirmation of the cancellation.
+  def cancel_report_schedule(report_schedule_id, headers: {})
+    api_call("#{Constants::REPORT_SCHEDULES}/#{report_schedule_id}", Constants::DELETE, headers: headers)
+  end
+
+  # API to retrieve a list of disbursements
+  # Retrieves a list of disbursements based on the provided query parameters.
+  # @see https://developer.amazon.com/docs/amazon-pay-api-v2/reports.html#get-disbursements
+  # @param {Object} headers - Optional headers for the request, such as authorization tokens or custom headers.
+  # @param {Object} query_params - Query parameters to filter the disbursements, such as date range or status.
+  # @return [HTTPResponse] The response from the API call, which includes a list of disbursements matching the criteria.
+  def get_disbursements(headers: {}, query_params: {})
+    api_call(Constants::DISBURSEMENTS, Constants::GET, headers: headers, query_params: query_params)
+  end
 end
