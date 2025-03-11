@@ -5,7 +5,7 @@ This guide provides step-by-step instructions on how to use the Amazon Pay Clien
 
 ### Prerequisites
 
-- Ruby installed on your system.
+- Ruby (version 2.7.0 or later) installed on your system.
 - `amazon-pay-api-sdk-ruby` gem installed or this source code has been imported in your project.
 - Your `publicKeyId` & `privateKey.pem` file available.
 
@@ -21,6 +21,8 @@ gem 'amazon-pay-api-sdk-ruby'
 ```
 bundle install
 ```
+
+**Notice:** Those who may upgrade from 1.x.x to 2.0.0 or higher: You must change the require statement from: `require './lib/amazon_pay'` to `require './lib/amazon-pay-api-sdk-ruby'` or `require 'amazon_pay'` to `require 'amazon-pay-api-sdk-ruby'`
 
 ### Configuration
 
@@ -47,7 +49,7 @@ client = AmazonPayClient.new(config)
 Define the payload and headers for the `create_merchant_account` API call:
 
 ```ruby
-require './lib/amazon_pay'
+require 'amazon-pay-api-sdk-ruby'
 
 client = AmazonPayClient.new(config)
 
@@ -509,6 +511,32 @@ else
 end
 ```
 
+### Update Charge
+**Please note that is API is supported only for PSPs (Payment Service Provider)**
+
+```ruby
+def payload = {
+    "statusDetails": {
+        "state": "Canceled",
+        "reasonCode": "ExpiredUnused"
+    }
+}
+
+def headers = {
+    "x-amz-pay-Idempotency-Key": SecureRandom.uuid
+}
+
+response = client.update_charge("S03-XXXXXX-XXXXXX-XXXXXX", payload, headers: headers)
+if response.code.to_i == 200
+    puts "Update Charge API Response:"
+    puts response.body
+else
+    puts "Error: Update Charge API"
+    puts "Status: #{response.code}"
+    puts response.body
+end
+```
+
 ### Capture Charge
 
 ```ruby
@@ -741,6 +769,127 @@ if response.code.to_i == 200
     puts response.body
 else
     puts "Error: Get Disbursements API"
+    puts "Status: #{response.code}"
+    puts response.body
+end
+```
+
+### Create Dispute API
+
+```ruby
+creation_timestamp = Time.now.to_i
+merchant_response_deadline = creation_timestamp + (14 * 24 * 60 * 60) # Adding 14 days
+
+payload = {
+  "chargeId": "S03-XXXXXX-XXXXXX-XXXXXX",
+  "providerMetadata": {
+    "providerDisputeId": "AXXXXXXXXXX"
+  },  
+  "disputeAmount": {
+    "amount": "1",
+    "currencyCode": "JPY"
+  },  
+  "filingReason": Constants::DISPUTE_FILING_REASON[:PRODUCT_NOT_RECEIVED],
+  "creationTimestamp": creation_timestamp,
+  "statusDetails": {
+    "state": "ActionRequired"
+  },  
+  "merchantResponseDeadline": merchant_response_deadline
+}
+
+def headers = {
+    "x-amz-pay-Idempotency-Key": SecureRandom.uuid
+}
+
+response = client.create_dispute(payload, headers: headers)
+if response.code.to_i == 200
+    puts "Create Dispute API Response:"
+    puts response.body
+else
+    puts "Error: Create Dispute API"
+    puts "Status: #{response.code}"
+    puts response.body
+end
+```
+
+### Update Dispute API 
+
+```ruby
+current_timestamp = Time.now.to_i
+dispute_id = "S03-XXXXXX-XXXXXX-XXXXXX"
+
+payload = {
+    "statusDetails": {
+        "resolution": Constants::DISPUTE_RESOLUTION[:MERCHANT_WON],
+        "state": Constants::DISPUTE_STATE[:RESOLVED],
+        "reasonCode": Constants::DISPUTE_REASON_CODE[:MERCHANT_ACCEPTED_DISPUTE],
+        "reasonDescription": "Merchant accepted the dispute request"
+    },
+    "closureTimestamp": current_timestamp
+}
+
+def headers = {
+    "x-amz-pay-Idempotency-Key": SecureRandom.uuid
+}
+
+response = client.update_dispute(dispute_id, payload, headers: {})
+if response.code.to_i == 200
+    puts "Update Dispute API Response:"
+    puts response.body
+else
+    puts "Error: Update Dispute API"
+    puts "Status: #{response.code}"
+    puts response.body
+end
+```
+
+### Contest Dispute API 
+
+```ruby
+current_timestamp = Time.now.to_i
+dispute_id = "S03-XXXXXX-XXXXXX-XXXXXX"
+
+payload = {
+    "merchantEvidences": [
+        "evidenceType": "TrackingNumber",
+        "fileId": "xxxxxxx-xxxx-xxxx-xxxx-xxxxxxx",
+        "evidenceText": "raw text supporting merchant evidence"
+    ]
+}
+
+def headers = {
+    "x-amz-pay-Idempotency-Key": SecureRandom.uuid
+}
+
+response = client.contest_dispute(dispute_id, payload, headers: {})
+if response.code.to_i == 200
+    puts "Contest Dispute API Response:"
+    puts response.body
+else
+    puts "Error: Contest Dispute API"
+    puts "Status: #{response.code}"
+    puts response.body
+end
+```
+
+### File Upload API 
+
+```ruby
+payload = {
+    "type": "jpg",
+    "purpose": "disputeEvidence"
+}
+
+def headers = {
+    "x-amz-pay-Idempotency-Key": SecureRandom.uuid
+}
+
+response = client.upload_file(payload, headers: headers)
+if response.code.to_i == 200
+    puts "Upload File API Response:"
+    puts response.body
+else
+    puts "Error: Upload File API"
     puts "Status: #{response.code}"
     puts response.body
 end

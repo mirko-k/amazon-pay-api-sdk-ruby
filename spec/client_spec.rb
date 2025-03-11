@@ -325,6 +325,22 @@ RSpec.describe AmazonPayClient do
         end
     end
 
+    describe '#update_charge' do
+        let(:charge_id) { 'chargeId' }
+
+        it 'calls api_call with the correct parameters' do
+            expect(client).to receive(:api_call).with(
+                "#{Constants::CHARGES_URL}/#{charge_id}",
+                Constants::PATCH,
+                payload: payload,
+                headers: headers
+                ).and_return(response)
+
+            result = client.update_charge(charge_id, payload, headers: headers)
+            expect(result).to eq(response)
+        end
+    end
+
     describe '#capture_charge' do
         let(:charge_id) { 'chargeId' }
 

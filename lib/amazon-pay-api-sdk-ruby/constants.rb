@@ -2,7 +2,7 @@ require 'net/http'
 
 module Constants
     SDK_TYPE = "amazon-pay-api-sdk-ruby".freeze
-    SDK_VERSION = "1.2.0".freeze
+    SDK_VERSION = "2.0.0".freeze
     API_VERSION = "v2".freeze
     API_ENDPOINTS = {
       'na' => 'pay-api.amazon.com',
@@ -50,4 +50,48 @@ module Constants
     REPORT_SCHEDULES = 'report-schedules'.freeze
     REPORT_DOCUMENTS = 'report-documents'.freeze
     DISBURSEMENTS = 'disbursements'.freeze
+    DISPUTE_URLS = 'disputes'.freeze
+    FILES_URLS = 'files'.freeze
+    DISPUTE_FILING_REASON = {
+      PRODUCT_NOT_RECEIVED: "ProductNotReceived",
+      PRODUCT_UNACCEPTABLE: "ProductUnacceptable",
+      PRODUCT_NO_LONGER_NEEDED: "ProductNoLongerNeeded",
+      CREDIT_NOT_PROCESSED: "CreditNotProcessed",
+      OVERCHARGED: "Overcharged",
+      DUPLICATE_CHARGE: "DuplicateCharge",
+      SUBSCRIPTION_CANCELLED: "SubscriptionCancelled",
+      UNRECOGNIZED: "Unrecognized",
+      FRAUDULENT: "Fraudulent",
+      OTHER: "Other"
+    }.freeze
+    DISPUTE_REASON_CODE = {
+      MERCHANT_RESPONSE_REQUIRED: "MerchantResponseRequired",
+      MERCHANT_ADDITIONAL_EVIDENCES_REQUIRED: "MerchantAdditionalEvidencesRequired",
+      BUYER_ADDITIONAL_EVIDENCES_REQUIRED: "BuyerAdditionalEvidencesRequired",
+      MERCHANT_ACCEPTED_DISPUTE: "MerchantAcceptedDispute",
+      MERCHANT_RESPONSE_DEADLINE_EXPIRED: "MerchantResponseDeadlineExpired",
+      BUYER_CANCELLED: "BuyerCancelled",
+      INVESTIGATOR_RESOLVED: "InvestigatorResolved",
+      AUTO_RESOLVED: "AutoResolved",
+      CHARGEBACK_FILED: "ChargebackFiled"
+    }.freeze
+    DISPUTE_RESOLUTION = {
+      BUYER_WON: "BuyerWon",
+      MERCHANT_WON: "MerchantWon",
+      NO_FAULT: "NoFault"
+    }.freeze
+    DISPUTE_STATE = {
+      UNDER_REVIEW: "UnderReview",
+      ACTION_REQUIRED: "ActionRequired",
+      RESOLVED: "Resolved",
+      CLOSED: "Closed"
+    }.freeze
+    EVIDENCE_TYPE = {
+      PRODUCT_DESCRIPTION: "ProductDescription",
+      RECEIPT: "Receipt",
+      CANCELLATION_POLICY: "CancellationPolicy",
+      CUSTOMER_SIGNATURE: "CustomerSignature",
+      TRACKING_NUMBER: "TrackingNumber",
+      OTHER: "Other"
+    }.freeze
 end

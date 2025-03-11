@@ -1,9 +1,10 @@
 require 'net/http'
 require_relative 'client_helper'
 require_relative 'constants'
+require_relative 'payment_service_provider_client'
 
 # AmazonPayClient class provides methods to interact with Amazon Pay API
-class AmazonPayClient
+class AmazonPayClient include PaymentServiceProviderClient
 
   # Initialize the client with configuration settings
   def initialize(config)
@@ -221,6 +222,18 @@ class AmazonPayClient
   # @return [HTTPResponse] The response from the API call, which includes details of the requested charge.
   def get_charge(charge_id, headers: {})
     api_call("#{Constants::CHARGES_URL}/#{charge_id}", Constants::GET, headers: headers)
+  end
+
+  # API to retrieve charge details. 
+  # The updateCharge operation is used to update the charge status of any PSP (Payment Service Provider) processed payment method (PPM) transactions.
+  # Please note that is API is supported only for PSPs (Payment Service Provider)
+  # @see https://developer.amazon.com/docs/amazon-pay-apis/charge.html#update-charge
+  # @param {String} charge_id - The unique ID of the charge to update.
+  # @param {Object} payload - The payload containing statusDetails.
+  # @param {Object} headers - Optional headers for the request, such as x-amz-pay-idempotency-key, authorization tokens or custom headers.
+  # @return [HTTPResponse] The response from the API call, which includes details of the requested charge.
+  def update_charge(charge_id, payload, headers: {})
+    api_call("#{Constants::CHARGES_URL}/#{charge_id}", Constants::PATCH, payload: payload, headers: headers)
   end
 
   # API to capture a charge
